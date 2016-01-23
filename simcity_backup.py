@@ -96,7 +96,8 @@ def backup_plugin():
 
     for item in plugins_list:
         plugins_zipfile.write(item)
-        sys.stdout.write('*')
+        if int((plugins_list.index(item) + 1) / float(len(plugins_list)) * 100) % 10 == 0 :
+            sys.stdout.write('*')
 
     sys.stdout.write('\n')
     plugins_zipfile.close()
@@ -124,7 +125,8 @@ def backup_region():
 
     for item in regions_list:
         regions_zipfile.write(item)
-        sys.stdout.write('*')
+        if int((regions_list.index(item) + 1) / float(len(regions_list)) * 100) % 10 == 0 :
+            sys.stdout.write('*')
 
     sys.stdout.write('\n')
     regions_zipfile.close()
