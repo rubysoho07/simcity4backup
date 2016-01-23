@@ -82,6 +82,9 @@ def backup_plugin():
 
     plugins_list = []
 
+    printed_already = False
+    printed_point = 0
+
     os.chdir(plugins_path)
 
     for root, dirs, names in os.walk("."):
@@ -96,10 +99,19 @@ def backup_plugin():
 
     for item in plugins_list:
         plugins_zipfile.write(item)
-        if int((plugins_list.index(item) + 1) / float(len(plugins_list)) * 100) % 10 == 0 :
-            sys.stdout.write('*')
+        percent = plugins_list.index(item) / float(len(plugins_list)) * 100
+        if int(percent) % 10 == 0 and percent >= 10:
+            if printed_already == False:
+                sys.stdout.write('*')
+                printed_already = True
+                printed_point = int(percent)
 
-    sys.stdout.write('\n')
+            if printed_point != int(percent):
+                printed_already = False
+            else:
+                printed_already = True
+
+    sys.stdout.write('* \t\t [Done]\n')
     plugins_zipfile.close()
     os.rename(plugin_file_name, backup_path+plugin_file_name)
 
@@ -112,6 +124,10 @@ def backup_region():
     global backup_path
 
     regions_list = []
+
+    printed_already = False
+    printed_point = 0
+
     os.chdir(regions_path)
 
     for root, dirs, names in os.walk("."):
@@ -125,20 +141,25 @@ def backup_region():
 
     for item in regions_list:
         regions_zipfile.write(item)
-        if int((regions_list.index(item) + 1) / float(len(regions_list)) * 100) % 10 == 0 :
-            sys.stdout.write('*')
+        percent = regions_list.index(item) / float(len(regions_list)) * 100
+        if int(percent) % 10 == 0 and percent >= 10:
+            if printed_already == False:
+                sys.stdout.write('*')
+                printed_already = True
+                printed_point = int(percent)
 
-    sys.stdout.write('\n')
+            if printed_point != int(percent):
+                printed_already = False
+            else:
+                printed_already = True
+
+    sys.stdout.write('* \t\t [Done]\n')
     regions_zipfile.close()
     os.rename(region_file_name, backup_path+region_file_name)
 
     print "Making regions backup ... Done."
 
-
-
-
-
-
+# Main routine.
 if __name__ == "__main__":
 
     system_check()
