@@ -61,14 +61,7 @@ def system_check():
     # 2-1. Check whether backup path is present. (If not, make directory.)
 
     if (os.path.exists(backup_path) == True):
-        print "Backup folder (" + backup_path + ") exists."
-        if (os.path.exists(backup_path+plugin_file_name) == True):
-            print "Already backuped today's plugins data."
-            sys.exit()
-
-        if (os.path.exists(backup_path+region_file_name) == True):
-            print "Already backuped today's regions data."
-            sys.exit()
+        print "Backup folder (" + backup_path + ") exists."    
     else:
         print "Backup folder doesn't exist. make directory " + backup_path
         os.mkdir(backup_path)
@@ -84,6 +77,11 @@ def backup_plugin():
 
     printed_already = False
     printed_point = 0
+
+    # If backup file exists, exit this function.
+    if (os.path.exists(backup_path+plugin_file_name) == True):
+        print "Already backuped today's plugins data."
+        return
 
     os.chdir(plugins_path)
 
@@ -127,6 +125,10 @@ def backup_region():
 
     printed_already = False
     printed_point = 0
+
+    if (os.path.exists(backup_path+region_file_name) == True):
+        print "Already backuped today's regions data."
+        return
 
     os.chdir(regions_path)
 
