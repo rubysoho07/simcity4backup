@@ -334,7 +334,9 @@ if __name__ == "__main__":
 
     is_backup_plugin = raw_input("Will you backup plugins?(y/n)")
 
-    if is_backup_plugin[0] == "y":
+    if is_backup_plugin == "":
+        print "No input detected. Plugin backup file will not be made."
+    elif is_backup_plugin[0] == "y":
         backup_plugin()
     elif is_backup_plugin[0] == "n":
         print "OK. I'll go on."
@@ -344,10 +346,12 @@ if __name__ == "__main__":
 
     is_backup_region = raw_input("Will you backup regions?(y/n)")
 
-    if is_backup_region[0] == "y":
+    if is_backup_region == "":
+        print "No input detected. Region backup file will not be made."
+    elif is_backup_region[0] == "y":
         backup_region()
     elif is_backup_region[0] == "n":
-        print "Ok. All done."
+        print "Ok. I'll go on."
     else:
         print "Invalid input! Input must be started with 'y' or 'n'. Execute this script again."
         sys.exit()
