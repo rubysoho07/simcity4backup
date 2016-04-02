@@ -330,8 +330,7 @@ if __name__ == "__main__":
     # System Check.
     system_check()
 
-    # Ask backup path
-
+    # Backup Plugin.
     is_backup_plugin = raw_input("Will you backup plugins?(y/n)")
 
     if is_backup_plugin == "":
@@ -344,6 +343,7 @@ if __name__ == "__main__":
         print "Invalid input! Input must be started with 'y' or 'n'. Execute this script again."
         sys.exit()
 
+    # Backup Region.
     is_backup_region = raw_input("Will you backup regions?(y/n)")
 
     if is_backup_region == "":
