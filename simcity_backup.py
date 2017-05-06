@@ -241,15 +241,39 @@ def system_check():
         print "Making directory at (" + backup_path + ")... Done."
 
 
+def make_backup_file(file_name, file_list):
+    """ Make backup file with zipfile library. """
+    printed_already = False
+    printed_point = 0
+
+    backup_file = zipfile.ZipFile(file_name, "w",
+                                  zipfile.ZIP_DEFLATED)
+
+    for item in file_list:
+        backup_file.write(item)
+        print item, "Done."
+        percent = file_list.index(item) / float(len(file_list)) * 100
+        if int(percent) % 10 == 0 and percent >= 10:
+            if printed_already is False:
+                sys.stdout.write('*')
+                printed_already = True
+                printed_point = int(percent)
+
+            if printed_point != int(percent):
+                printed_already = False
+            else:
+                printed_already = True
+
+    sys.stdout.write('* \t\t [Done]\n')
+    backup_file.close()
+
+
 def backup_plugin():
     """ Backup plugin files. (Buildings) """
     global plugin_file_name
     global backup_path
 
     plugins_list = []
-
-    printed_already = False
-    printed_point = 0
 
     # If backup file exists, exit this function.
     if os.path.exists(backup_path+plugin_file_name) is True:
@@ -265,26 +289,7 @@ def backup_plugin():
     print "Make plugins file list ... Done. ", len(plugins_list), " files."
     sys.stdout.write("Making backup : ")
 
-    # 2-3. Make zipfile with zipfile.ZIP_DEFLATED option (to compress files)
-    plugins_zipfile = zipfile.ZipFile(plugin_file_name, "w",
-                                      zipfile.ZIP_DEFLATED)
-
-    for item in plugins_list:
-        plugins_zipfile.write(item)
-        percent = plugins_list.index(item) / float(len(plugins_list)) * 100
-        if int(percent) % 10 == 0 and percent >= 10:
-            if printed_already is False:
-                sys.stdout.write('*')
-                printed_already = True
-                printed_point = int(percent)
-
-            if printed_point != int(percent):
-                printed_already = False
-            else:
-                printed_already = True
-
-    sys.stdout.write('* \t\t [Done]\n')
-    plugins_zipfile.close()
+    make_backup_file(plugin_file_name, plugins_list)
     os.rename(plugin_file_name, backup_path+plugin_file_name)
 
     print "Making plugins backup ... Done."
@@ -296,9 +301,6 @@ def backup_region():
     global backup_path
 
     regions_list = []
-
-    printed_already = False
-    printed_point = 0
 
     # Check today's region backup exists.
     if os.path.exists(backup_path+region_file_name) is True:
@@ -317,25 +319,7 @@ def backup_region():
     sys.stdout.write("Making backup : ")
 
     # Make zip file.
-    regions_zipfile = zipfile.ZipFile(region_file_name, "w",
-                                      zipfile.ZIP_DEFLATED)
-
-    for item in regions_list:
-        regions_zipfile.write(item)
-        percent = regions_list.index(item) / float(len(regions_list)) * 100
-        if int(percent) % 10 == 0 and percent >= 10:
-            if printed_already is False:
-                sys.stdout.write('*')
-                printed_already = True
-                printed_point = int(percent)
-
-            if printed_point != int(percent):
-                printed_already = False
-            else:
-                printed_already = True
-
-    sys.stdout.write('* \t\t [Done]\n')
-    regions_zipfile.close()
+    make_backup_file(region_file_name, regions_list)
     os.rename(region_file_name, backup_path+region_file_name)
 
     print "Making regions backup ... Done."
@@ -347,9 +331,6 @@ def backup_album():
     global backup_path
 
     albums_list = []
-
-    printed_already = False
-    printed_point = 0
 
     # Check today's region backup exists.
     if os.path.exists(backup_path+album_file_name) is True:
@@ -369,25 +350,7 @@ def backup_album():
     sys.stdout.write("Making backup : ")
 
     # Make zip file.
-    albums_zipfile = zipfile.ZipFile(album_file_name, "w",
-                                     zipfile.ZIP_DEFLATED)
-
-    for item in albums_list:
-        albums_zipfile.write(item)
-        percent = albums_list.index(item) / float(len(albums_list)) * 100
-        if int(percent) % 10 == 0 and percent >= 10:
-            if printed_already is False:
-                sys.stdout.write('*')
-                printed_already = True
-                printed_point = int(percent)
-
-            if printed_point != int(percent):
-                printed_already = False
-            else:
-                printed_already = True
-
-    sys.stdout.write('* \t\t [Done]\n')
-    albums_zipfile.close()
+    make_backup_file(album_file_name, albums_list)
     os.rename(album_file_name, backup_path+album_file_name)
 
     print "Making screenshots(albums) backup ... Done."
