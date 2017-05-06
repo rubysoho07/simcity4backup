@@ -1,4 +1,4 @@
-# simcity backup (using zipfile library) 
+# simcity backup (using zipfile library)
 # Yungon Park
 # https://github.com/rubysoho07/simcity4backup
 
@@ -20,15 +20,15 @@ album_file_name = ""
 
 backup_path = ""
 
-# 1. Check whether SimCity plugins, region and album folder. (If not, exit program. -- using sys.exit())
+# 1. Check whether SimCity plugins, region and album folder. (If not, exit program.)
 # os.path.exists (path) : you can check whether the file or directory exist.
 
 plugins_path = ""
 regions_path = ""
 albums_path = ""
 
-# Write default config (If you don't have scb.cfg file)
-def write_default_config ():
+def write_default_config():
+    """ Write default config (If you don't have scb.cfg file) """
     global plugins_path
     global regions_path
     global albums_path
@@ -40,7 +40,7 @@ def write_default_config ():
     tmp_dst_path = ""
 
     # Write source directory
-    tmp_src_path = find_folder ()
+    tmp_src_path = find_folder()
     if tmp_src_path != "":
         plugins_path = tmp_src_path + "Plugins\\"
         regions_path = tmp_src_path + "Regions\\"
@@ -48,34 +48,35 @@ def write_default_config ():
         print "Set default source:", tmp_src_path
     else:
         print "SimCity 4 may not be installed. Check whether SimCity 4 installed."
-        cfg_w.close ()
-        sys.exit ()
+        cfg_w.close()
+        sys.exit()
 
-    cfg_w.write ("SRC_DIR" + "=" + tmp_src_path + "\n")
+    cfg_w.write("SRC_DIR" + "=" + tmp_src_path + "\n")
 
     # Write destination directory
     tmp_dst_path = os.getcwd() + "\\"
     print "Set default destination:", tmp_dst_path
     backup_path = tmp_dst_path
 
-    cfg_w.write ("DEST_DIR" + "=" + tmp_dst_path + "\n")
+    cfg_w.write("DEST_DIR" + "=" + tmp_dst_path + "\n")
 
-    cfg_w.close ()
+    cfg_w.close()
 
-# Write config
-def write_config (option, write_path):
+
+def write_config(option, write_path):
+    """ Write config file. """
     cfg_r = open("scb.cfg", 'r')
     cfg_w = open("scb.cfg_w", 'w')
 
     while True:
         # readline
-        line = cfg_r.readline ()
+        line = cfg_r.readline()
 
         if not line:
             break
 
         # split with "="
-        line_split = line.split ('=')
+        line_split = line.split('=')
 
         # if length is 2, just write.
         if len(line_split) == 2:
@@ -84,19 +85,21 @@ def write_config (option, write_path):
                 continue
             cfg_w.write(line+"\n")
 
-    cfg_w.write (option + "=" + write_path)
+    cfg_w.write(option + "=" + write_path)
 
-    cfg_r.close ()
-    cfg_w.close ()
+    cfg_r.close()
+    cfg_w.close()
 
-    os.remove ("scb.cfg")
-    os.rename ("scb.cfg_w", "scb.cfg")
+    os.remove("scb.cfg")
+    os.rename("scb.cfg_w", "scb.cfg")
 
 
-# Find SimCity 4 Region/Plugin folder & Write path to file.
-def find_folder ():
-    # find SimCity 4 Directory. It must have SimCity 4.cfg, Region and Plugins folder. 
-    # Windows 7, 8, 10 Users Directory: C:\Users\
+def find_folder():
+    """
+    Find SimCity 4 Region/Plugin folder & Write path to file.
+    find SimCity 4 Directory. It must have SimCity 4.cfg, Region and Plugins folder.
+    Windows 7, 8, 10 Users Directory: C:\Users\
+    """
     user_list = []
 
     for item in glob.glob("C:\\Users\\*"):
@@ -108,8 +111,8 @@ def find_folder ():
 
     return ""
 
-# Read config from file.
-def read_config ():
+def read_config():
+    """ Read config from file. """
     global plugins_path
     global regions_path
     global albums_path
@@ -179,13 +182,13 @@ def read_config ():
 
     if tmp_src_path != "":
         write_config("SRC_DIR", tmp_src_path)
-    
+
     if tmp_dst_path != "":
         write_config("DEST_DIR", tmp_dst_path)
 
-# Check source and destination directory exists. 
-# After that, Make archive file name.
 def system_check():
+    """ Check source and destination directory exists.
+    After that, Make archive file name."""
     global is_there_regions
     global is_there_plugins
     global is_there_albums
@@ -198,21 +201,21 @@ def system_check():
     global album_file_name
     global backup_path
 
-    if (os.path.exists(regions_path) == True):
+    if os.path.exists(regions_path) is True:
         is_there_regions = True
         print "Regions directory exists."
     else:
         print "Regions directory (" + regions_path + ") doesn't exist.\n"
-        sys.exit()   
+        sys.exit()
 
-    if (os.path.exists(plugins_path) == True):
+    if os.path.exists(plugins_path) is True:
         is_there_plugins = True
         print "Plugins directory exists."
     else:
         print "Plugins directory (" + plugins_path + ")doesn't exist.\n"
         sys.exit()
 
-    if (os.path.exists(albums_path) == True):
+    if os.path.exists(albums_path) is True:
         is_there_albums = True
         print "Screenshots(Album) directory exists."
     else:
@@ -232,8 +235,8 @@ def system_check():
 
     # 2-1. Check whether backup path is present. (If not, make directory.)
 
-    if (os.path.exists(backup_path) == True):
-        print "Backup folder (" + backup_path + ") exists."    
+    if os.path.exists(backup_path) is True:
+        print "Backup folder (" + backup_path + ") exists."
     else:
         print "Backup folder doesn't exist. make directory " + backup_path
         os.mkdir(backup_path)
@@ -242,6 +245,7 @@ def system_check():
 # 2-2. Make file list of plugins and regions.
 
 def backup_plugin():
+    """ Backup plugin files. (Buildings) """
     global plugin_file_name
     global backup_path
 
@@ -251,13 +255,13 @@ def backup_plugin():
     printed_point = 0
 
     # If backup file exists, exit this function.
-    if (os.path.exists(backup_path+plugin_file_name) == True):
+    if os.path.exists(backup_path+plugin_file_name) is True:
         print "Already backuped today's plugins data."
         return
 
     os.chdir(plugins_path)
 
-    for root, dirs, names in os.walk("."):
+    for root, _, names in os.walk("."):
         for name in names:
             plugins_list.append(os.path.join(root, name))
 
@@ -271,7 +275,7 @@ def backup_plugin():
         plugins_zipfile.write(item)
         percent = plugins_list.index(item) / float(len(plugins_list)) * 100
         if int(percent) % 10 == 0 and percent >= 10:
-            if printed_already == False:
+            if printed_already is False:
                 sys.stdout.write('*')
                 printed_already = True
                 printed_point = int(percent)
@@ -290,6 +294,7 @@ def backup_plugin():
 # for regions directory, also make list and make zipfile.
 
 def backup_region():
+    """ Backup region files. """
     global region_file_name
     global backup_path
 
@@ -299,7 +304,7 @@ def backup_region():
     printed_point = 0
 
     # Check today's region backup exists.
-    if (os.path.exists(backup_path+region_file_name) == True):
+    if os.path.exists(backup_path+region_file_name) is True:
         print "Already backuped today's regions data."
         return
 
@@ -307,7 +312,7 @@ def backup_region():
     os.chdir(regions_path)
 
     # Make files of regions directory list.
-    for root, dirs, names in os.walk("."):
+    for root, _, names in os.walk("."):
         for name in names:
             regions_list.append(os.path.join(root, name))
 
@@ -321,7 +326,7 @@ def backup_region():
         regions_zipfile.write(item)
         percent = regions_list.index(item) / float(len(regions_list)) * 100
         if int(percent) % 10 == 0 and percent >= 10:
-            if printed_already == False:
+            if printed_already is False:
                 sys.stdout.write('*')
                 printed_already = True
                 printed_point = int(percent)
@@ -340,6 +345,7 @@ def backup_region():
 # Backup screenshots.
 
 def backup_album():
+    """ Backup screenshots. """
     global album_file_name
     global backup_path
 
@@ -349,7 +355,7 @@ def backup_album():
     printed_point = 0
 
     # Check today's region backup exists.
-    if (os.path.exists(backup_path+album_file_name) == True):
+    if os.path.exists(backup_path+album_file_name) is True:
         print "Already backuped today's screenshots data."
         return
 
@@ -357,7 +363,7 @@ def backup_album():
     os.chdir(albums_path)
 
     # Make files of albums directory list.
-    for root, dirs, names in os.walk("."):
+    for root, _, names in os.walk("."):
         for name in names:
             albums_list.append(os.path.join(root, name))
 
@@ -371,7 +377,7 @@ def backup_album():
         albums_zipfile.write(item)
         percent = albums_list.index(item) / float(len(albums_list)) * 100
         if int(percent) % 10 == 0 and percent >= 10:
-            if printed_already == False:
+            if printed_already is False:
                 sys.stdout.write('*')
                 printed_already = True
                 printed_point = int(percent)
@@ -440,4 +446,4 @@ if __name__ == "__main__":
         sys.exit()
 
     # 2-4. done.
-    print "All Done. Check \"" + backup_path + "\" directory." 
+    print "All Done. Check \"" + backup_path + "\" directory."
