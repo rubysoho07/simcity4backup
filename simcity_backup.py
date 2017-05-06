@@ -72,7 +72,7 @@ def write_config (option, write_path):
         line = cfg_r.readline ()
 
         if not line:
-            break;
+            break
 
         # split with "="
         line_split = line.split ('=')
@@ -159,7 +159,7 @@ def read_config ():
 
         elif split_line[0] == "DEST_DIR":
             # Find destination directory.
-            if split_line[1] == "":
+            if split_line[1] == "" or not os.path.exists(split_line[1]):
                 # Default backup path is CWD(Current Working Directory).
                 tmp_dst_path = os.getcwd() + "\\"
                 print "Set default destination:", tmp_dst_path
