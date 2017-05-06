@@ -24,12 +24,12 @@ album_file_name = ""
 
 backup_path = ""
 
-# 1. Check whether SimCity plugins, region and album folder. (If not, exit program.)
-# os.path.exists (path) : you can check whether the file or directory exist.
+# Check whether SimCity plugins, region and album folder. (If not, exit.)
 
 plugins_path = ""
 regions_path = ""
 albums_path = ""
+
 
 def write_default_config():
     """ Write default config (If you don't have scb.cfg file) """
@@ -51,7 +51,8 @@ def write_default_config():
         albums_path = tmp_src_path + "Albums\\"
         print "Set default source:", tmp_src_path
     else:
-        print "SimCity 4 may not be installed. Check whether SimCity 4 installed."
+        print "SimCity 4 may not be installed."
+        print "Check whether SimCity 4 installed."
         cfg_w.close()
         sys.exit()
 
@@ -103,13 +104,15 @@ def find_folder():
     user_list = []
 
     for item in glob.glob("C:\\Users\\*"):
-        if os.path.isdir(item) and os.access(item + "\\Documents\\SimCity 4\\", os.F_OK):
+        if os.path.isdir(item) and os.access(item + "\\Documents\\SimCity 4\\",
+                                             os.F_OK):
             user_list.append(item)
 
     if len(user_list) == 1:
         return user_list[0] + "\\Documents\\SimCity 4\\"
 
     return ""
+
 
 def read_config():
     """ Read config from file. """
@@ -142,7 +145,8 @@ def read_config():
                     albums_path = tmp_src_path + "Albums\\"
                     print "Set default source:", tmp_src_path
                 else:
-                    print "SimCity 4 may not be installed. Check whether SimCity 4 is installed."
+                    print "SimCity 4 may not be installed.",
+                    print "Check whether SimCity 4 is installed."
                     sys.exit()
             else:
                 plugins_path = split_line[1] + "Plugins\\"
@@ -179,6 +183,7 @@ def read_config():
     if tmp_dst_path != "":
         write_config("DEST_DIR", tmp_dst_path)
 
+
 def system_check():
     """ Check source and destination directory exists.
     After that, Make archive file name."""
@@ -210,9 +215,9 @@ def system_check():
 
     if os.path.exists(albums_path) is True:
         is_there_albums = True
-        print "Screenshots(Album) directory exists."
+        print "Screenshots directory exists."
     else:
-        print "Screenshots(Album) directory (" + albums_path + ")doesn't exist.\n"
+        print "Screenshots directory (" + albums_path + ")doesn't exist.\n"
         sys.exit()
 
     # 2. If those are true, make backup file at "D:\SCbackup\".
@@ -226,7 +231,7 @@ def system_check():
     region_file_name = "SC_Region_" + today_date.isoformat() + ".zip"
     album_file_name = "SC_Screenshot_" + today_date.isoformat() + ".zip"
 
-    # 2-1. Check whether backup path is present. (If not, make directory.)
+    # Check whether backup path is present. (If not, make directory.)
 
     if os.path.exists(backup_path) is True:
         print "Backup folder (" + backup_path + ") exists."
@@ -235,7 +240,6 @@ def system_check():
         os.mkdir(backup_path)
         print "Making directory at (" + backup_path + ")... Done."
 
-# 2-2. Make file list of plugins and regions.
 
 def backup_plugin():
     """ Backup plugin files. (Buildings) """
@@ -262,7 +266,8 @@ def backup_plugin():
     sys.stdout.write("Making backup : ")
 
     # 2-3. Make zipfile with zipfile.ZIP_DEFLATED option (to compress files)
-    plugins_zipfile = zipfile.ZipFile(plugin_file_name, "w", zipfile.ZIP_DEFLATED)
+    plugins_zipfile = zipfile.ZipFile(plugin_file_name, "w",
+                                      zipfile.ZIP_DEFLATED)
 
     for item in plugins_list:
         plugins_zipfile.write(item)
@@ -284,7 +289,6 @@ def backup_plugin():
 
     print "Making plugins backup ... Done."
 
-# for regions directory, also make list and make zipfile.
 
 def backup_region():
     """ Backup region files. """
@@ -313,7 +317,8 @@ def backup_region():
     sys.stdout.write("Making backup : ")
 
     # Make zip file.
-    regions_zipfile = zipfile.ZipFile(region_file_name, "w", zipfile.ZIP_DEFLATED)
+    regions_zipfile = zipfile.ZipFile(region_file_name, "w",
+                                      zipfile.ZIP_DEFLATED)
 
     for item in regions_list:
         regions_zipfile.write(item)
@@ -335,7 +340,6 @@ def backup_region():
 
     print "Making regions backup ... Done."
 
-# Backup screenshots.
 
 def backup_album():
     """ Backup screenshots. """
@@ -360,11 +364,13 @@ def backup_album():
         for name in names:
             albums_list.append(os.path.join(root, name))
 
-    print "Make screenshots(albums) file list ... Done. ", len(albums_list), " files."
+    print "Make screenshots(albums) file list ... Done. ",
+    print "File count:", len(albums_list), "files."
     sys.stdout.write("Making backup : ")
 
     # Make zip file.
-    albums_zipfile = zipfile.ZipFile(album_file_name, "w", zipfile.ZIP_DEFLATED)
+    albums_zipfile = zipfile.ZipFile(album_file_name, "w",
+                                     zipfile.ZIP_DEFLATED)
 
     for item in albums_list:
         albums_zipfile.write(item)
@@ -409,7 +415,7 @@ if __name__ == "__main__":
     elif is_backup_plugin[0] == "n":
         print "OK. I'll go on."
     else:
-        print "Invalid input! Input must be started with 'y' or 'n'. Execute this script again."
+        print "Invalid input! Input must be started with 'y' or 'n'."
         sys.exit()
 
     # Backup Screenshot.
@@ -422,7 +428,7 @@ if __name__ == "__main__":
     elif is_backup_album[0] == "n":
         print "OK. I'll go on."
     else:
-        print "Invalid input! Input must be started with 'y' or 'n'. Execute this script again."
+        print "Invalid input! Input must be started with 'y' or 'n'."
         sys.exit()
 
     # Backup Region.
@@ -435,7 +441,7 @@ if __name__ == "__main__":
     elif is_backup_region[0] == "n":
         print "Ok. I'll go on."
     else:
-        print "Invalid input! Input must be started with 'y' or 'n'. Execute this script again."
+        print "Invalid input! Input must be started with 'y' or 'n'."
         sys.exit()
 
     # 2-4. done.
