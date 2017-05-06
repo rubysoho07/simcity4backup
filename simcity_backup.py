@@ -1,6 +1,10 @@
-# simcity backup (using zipfile library)
-# Yungon Park
-# https://github.com/rubysoho07/simcity4backup
+"""
+SimCity 4 backup (using zipfile library)
+
+Make a backup data of SimCity 4 user.
+By Yungon Park
+https://github.com/rubysoho07/simcity4backup
+"""
 
 import zipfile
 import datetime
@@ -95,11 +99,7 @@ def write_config(option, write_path):
 
 
 def find_folder():
-    """
-    Find SimCity 4 Region/Plugin folder & Write path to file.
-    find SimCity 4 Directory. It must have SimCity 4.cfg, Region and Plugins folder.
-    Windows 7, 8, 10 Users Directory: C:\Users\
-    """
+    """ Find SimCity 4 Region/Plugin folder & Write path to file. """
     user_list = []
 
     for item in glob.glob("C:\\Users\\*"):
@@ -118,10 +118,6 @@ def read_config():
     global albums_path
     global backup_path
 
-    # Check source/destination path found
-    is_src_found = False
-    is_dest_found = False
-
     # Temporary source/destination path
     tmp_src_path = ""
     tmp_dst_path = ""
@@ -131,10 +127,7 @@ def read_config():
     line = conf_file.readline()
     while line:
         # If string has return(\n), remove it.
-        if line[-1] == '\n':
-            line_without_return = line[:-1]
-        else:
-            line_without_return = line
+        line_without_return = line.strip('\n')
 
         # Read config.
         split_line = line_without_return.split('=')
@@ -149,7 +142,7 @@ def read_config():
                     albums_path = tmp_src_path + "Albums\\"
                     print "Set default source:", tmp_src_path
                 else:
-                    print "SimCity 4 may not be installed. Check whether SimCity 4 installed."
+                    print "SimCity 4 may not be installed. Check whether SimCity 4 is installed."
                     sys.exit()
             else:
                 plugins_path = split_line[1] + "Plugins\\"
