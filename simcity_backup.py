@@ -251,7 +251,6 @@ def make_backup_file(file_name, file_list):
 
     for item in file_list:
         backup_file.write(item)
-        print item, "Done."
         percent = file_list.index(item) / float(len(file_list)) * 100
         if int(percent) % 10 == 0 and percent >= 10:
             if printed_already is False:
