@@ -344,15 +344,30 @@ def backup_album():
         for name in names:
             albums_list.append(os.path.join(root, name))
 
-    print "Make screenshots(albums) file list ... Done. ",
-    print "File count:", len(albums_list), "files."
+    print "Make screenshots file list ... Done. ", len(albums_list), "files."
     sys.stdout.write("Making backup : ")
 
     # Make zip file.
     make_backup_file(album_file_name, albums_list)
     os.rename(album_file_name, backup_path+album_file_name)
 
-    print "Making screenshots(albums) backup ... Done."
+    print "Making screenshots backup ... Done."
+
+
+def do_backup(part, backup_function):
+    """ Ask to back up some part of game data and execute backup function. """
+    answer = raw_input("Will you backup " + part + "?(y/n)")
+
+    if answer == "":
+        print "No input detected. " + part + " backup file will not be made."
+    elif answer[0] == "y":
+        backup_function()
+    elif answer[0] == "n":
+        print "OK. I'll go on."
+    else:
+        print "Invalid input! Input must be started with 'y' or 'n'."
+        sys.exit()
+
 
 # Main routine.
 if __name__ == "__main__":
@@ -367,44 +382,10 @@ if __name__ == "__main__":
     # System Check.
     system_check()
 
-    # Backup Plugin.
-    is_backup_plugin = raw_input("Will you backup plugins?(y/n)")
-
-    if is_backup_plugin == "":
-        print "No input detected. Plugin backup file will not be made."
-    elif is_backup_plugin[0] == "y":
-        backup_plugin()
-    elif is_backup_plugin[0] == "n":
-        print "OK. I'll go on."
-    else:
-        print "Invalid input! Input must be started with 'y' or 'n'."
-        sys.exit()
-
-    # Backup Screenshot.
-    is_backup_album = raw_input("Will you backup screenshots(albums)?(y/n)")
-
-    if is_backup_album == "":
-        print "No input detected. Plugin backup file will not be made."
-    elif is_backup_album[0] == "y":
-        backup_album()
-    elif is_backup_album[0] == "n":
-        print "OK. I'll go on."
-    else:
-        print "Invalid input! Input must be started with 'y' or 'n'."
-        sys.exit()
-
-    # Backup Region.
-    is_backup_region = raw_input("Will you backup regions?(y/n)")
-
-    if is_backup_region == "":
-        print "No input detected. Region backup file will not be made."
-    elif is_backup_region[0] == "y":
-        backup_region()
-    elif is_backup_region[0] == "n":
-        print "Ok. I'll go on."
-    else:
-        print "Invalid input! Input must be started with 'y' or 'n'."
-        sys.exit()
+    # Backup game data.
+    do_backup("plugins", backup_plugin)
+    do_backup("screenshots", backup_album)
+    do_backup("regions", backup_region)
 
     # 2-4. done.
     print "All Done. Check \"" + backup_path + "\" directory."
