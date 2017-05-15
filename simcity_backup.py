@@ -11,6 +11,7 @@ import datetime
 import os
 import sys
 import glob
+import argparse
 
 is_there_plugins = False
 is_there_regions = False
@@ -369,8 +370,26 @@ def do_backup(part, backup_function):
         sys.exit()
 
 
+def print_version():
+    """ Print version of this script. """
+    print "SimCity 4 Backup Version "
+    print "Released Date: "
+    sys.exit()
+
 # Main routine.
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-v", "--version",
+                        help="Show version of SC4Backup.",
+                        action="store_true")
+    parser.add_argument("-y", "--yes",
+                        help="Backup all user data without asking you.",
+                        action="store_true")
+
+    args = parser.parse_args()
+
+    if args.version:
+        print_version()
 
     # Read Config
     if os.access("scb.cfg", os.F_OK):
@@ -383,9 +402,14 @@ if __name__ == "__main__":
     system_check()
 
     # Backup game data.
-    do_backup("plugins", backup_plugin)
-    do_backup("screenshots", backup_album)
-    do_backup("regions", backup_region)
+    if args.yes:
+        backup_plugin()
+        backup_album()
+        backup_region()
+    else:
+        do_backup("plugins", backup_plugin)
+        do_backup("screenshots", backup_album)
+        do_backup("regions", backup_region)
 
     # 2-4. done.
     print "All Done. Check \"" + backup_path + "\" directory."
