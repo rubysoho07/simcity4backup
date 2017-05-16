@@ -242,29 +242,26 @@ def system_check():
         print "Making directory at (" + backup_path + ")... Done."
 
 
+def print_star(num):
+    """ Print star(*) x num. """
+    for i in range(num):
+        sys.stdout.write('*')
+
+
 def make_backup_file(file_name, file_list):
     """ Make backup file with zipfile library. """
-    printed_already = False
-    printed_point = 0
-
-    backup_file = zipfile.ZipFile(file_name, "w",
-                                  zipfile.ZIP_DEFLATED)
+    printed_percent = 0
+    backup_file = zipfile.ZipFile(file_name, "w", zipfile.ZIP_DEFLATED)
 
     for item in file_list:
         backup_file.write(item)
         percent = file_list.index(item) / float(len(file_list)) * 100
-        if int(percent) % 10 == 0 and percent >= 10:
-            if printed_already is False:
-                sys.stdout.write('*')
-                printed_already = True
-                printed_point = int(percent)
+        if int(percent / 10) > int(printed_percent / 10):
+            print_star(int(percent / 10) - int(printed_percent / 10))
+            printed_percent = percent
 
-            if printed_point != int(percent):
-                printed_already = False
-            else:
-                printed_already = True
-
-    sys.stdout.write('* \t\t [Done]\n')
+    print_star(100/10 - int(printed_percent / 10))
+    sys.stdout.write(' \t\t [Done]\n')
     backup_file.close()
 
 
