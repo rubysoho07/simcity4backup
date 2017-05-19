@@ -369,8 +369,8 @@ def do_backup(part, backup_function):
 
 def print_version():
     """ Print version of this script. """
-    print "SimCity 4 Backup Version "
-    print "Released Date: "
+    print "SimCity 4 Backup Version v1.1.0"
+    print "Released Date: 2017-05-20"
     sys.exit()
 
 # Main routine.
