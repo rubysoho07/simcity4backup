@@ -50,10 +50,10 @@ def write_default_config():
         plugins_path = tmp_src_path + "Plugins\\"
         regions_path = tmp_src_path + "Regions\\"
         albums_path = tmp_src_path + "Albums\\"
-        print "Set default source:", tmp_src_path
+        print("Set default source:", tmp_src_path)
     else:
-        print "SimCity 4 may not be installed."
-        print "Check whether SimCity 4 installed."
+        print("SimCity 4 may not be installed.")
+        print("Check whether SimCity 4 installed.")
         cfg_w.close()
         sys.exit()
 
@@ -61,7 +61,7 @@ def write_default_config():
 
     # Write destination directory
     tmp_dst_path = os.getcwd() + "\\"
-    print "Set default destination:", tmp_dst_path
+    print("Set default destination:", tmp_dst_path)
     backup_path = tmp_dst_path
 
     cfg_w.write("DEST_DIR" + "=" + tmp_dst_path + "\n")
@@ -144,33 +144,33 @@ def read_config():
                     plugins_path = tmp_src_path + "Plugins\\"
                     regions_path = tmp_src_path + "Regions\\"
                     albums_path = tmp_src_path + "Albums\\"
-                    print "Set default source:", tmp_src_path
+                    print("Set default source:", tmp_src_path)
                 else:
-                    print "SimCity 4 may not be installed.",
-                    print "Check whether SimCity 4 is installed."
+                    print("SimCity 4 may not be installed.",)
+                    print("Check whether SimCity 4 is installed.")
                     sys.exit()
             else:
                 plugins_path = split_line[1] + "Plugins\\"
                 regions_path = split_line[1] + "Regions\\"
                 albums_path = split_line[1] + "Albums\\"
 
-            print "SimCity 4 Region Directory:", regions_path
-            print "SimCity 4 Plugin Directory:", plugins_path
-            print "SimCity 4 Screenshot(Album) Directory:", albums_path
+            print("SimCity 4 Region Directory:", regions_path)
+            print("SimCity 4 Plugin Directory:", plugins_path)
+            print("SimCity 4 Screenshot(Album) Directory:", albums_path)
 
         elif split_line[0] == "DEST_DIR":
             # Find destination directory.
             if split_line[1] == "" or not os.path.exists(split_line[1]):
                 # Default backup path is CWD(Current Working Directory).
                 tmp_dst_path = os.getcwd() + "\\"
-                print "Set default destination:", tmp_dst_path
+                print("Set default destination:", tmp_dst_path)
                 backup_path = tmp_dst_path
             else:
                 backup_path = split_line[1]
-                print "Destination Directory:", backup_path
+                print("Destination Directory:", backup_path)
         else:
             # Exception case.
-            print "Exception: Can't read config file. Check scb.cfg file."
+            print("Exception: Can't read config file. Check scb.cfg file.")
             conf_file.close()
             sys.exit()
 
@@ -202,23 +202,23 @@ def system_check():
 
     if os.path.exists(regions_path) is True:
         is_there_regions = True
-        print "Regions directory exists."
+        print("Regions directory exists.")
     else:
-        print "Regions directory (" + regions_path + ") doesn't exist.\n"
+        print("Regions directory (" + regions_path + ") doesn't exist.\n")
         sys.exit()
 
     if os.path.exists(plugins_path) is True:
         is_there_plugins = True
-        print "Plugins directory exists."
+        print("Plugins directory exists.")
     else:
-        print "Plugins directory (" + plugins_path + ")doesn't exist.\n"
+        print("Plugins directory (" + plugins_path + ")doesn't exist.\n")
         sys.exit()
 
     if os.path.exists(albums_path) is True:
         is_there_albums = True
-        print "Screenshots directory exists."
+        print("Screenshots directory exists.")
     else:
-        print "Screenshots directory (" + albums_path + ")doesn't exist.\n"
+        print("Screenshots directory (" + albums_path + ")doesn't exist.\n")
         sys.exit()
 
     # 2. If those are true, make backup file at "D:\SCbackup\".
@@ -235,16 +235,16 @@ def system_check():
     # Check whether backup path is present. (If not, make directory.)
 
     if os.path.exists(backup_path) is True:
-        print "Backup folder (" + backup_path + ") exists."
+        print("Backup folder (" + backup_path + ") exists.")
     else:
-        print "Backup folder doesn't exist. make directory " + backup_path
+        print("Backup folder doesn't exist. make directory " + backup_path)
         os.mkdir(backup_path)
-        print "Making directory at (" + backup_path + ")... Done."
+        print("Making directory at (" + backup_path + ")... Done.")
 
 
 def print_star(num):
     """ Print star(*) x num. """
-    for i in range(num):
+    for _ in range(num):
         sys.stdout.write('*')
 
 
@@ -274,7 +274,7 @@ def backup_plugin():
 
     # If backup file exists, exit this function.
     if os.path.exists(backup_path+plugin_file_name) is True:
-        print "Already backuped today's plugins data."
+        print("Already backuped today's plugins data.")
         return
 
     os.chdir(plugins_path)
@@ -283,13 +283,13 @@ def backup_plugin():
         for name in names:
             plugins_list.append(os.path.join(root, name))
 
-    print "Make plugins file list ... Done. ", len(plugins_list), " files."
+    print("Make plugins file list ... Done. ", len(plugins_list), " files.")
     sys.stdout.write("Making backup : ")
 
     make_backup_file(plugin_file_name, plugins_list)
     os.rename(plugin_file_name, backup_path+plugin_file_name)
 
-    print "Making plugins backup ... Done."
+    print("Making plugins backup ... Done.")
 
 
 def backup_region():
@@ -301,7 +301,7 @@ def backup_region():
 
     # Check today's region backup exists.
     if os.path.exists(backup_path+region_file_name) is True:
-        print "Already backuped today's regions data."
+        print("Already backuped today's regions data.")
         return
 
     # Go to regions_path.
@@ -312,14 +312,14 @@ def backup_region():
         for name in names:
             regions_list.append(os.path.join(root, name))
 
-    print "Make regions file list ... Done. ", len(regions_list), " files."
+    print("Make regions file list ... Done. ", len(regions_list), " files.")
     sys.stdout.write("Making backup : ")
 
     # Make zip file.
     make_backup_file(region_file_name, regions_list)
     os.rename(region_file_name, backup_path+region_file_name)
 
-    print "Making regions backup ... Done."
+    print("Making regions backup ... Done.")
 
 
 def backup_album():
@@ -331,7 +331,7 @@ def backup_album():
 
     # Check today's region backup exists.
     if os.path.exists(backup_path+album_file_name) is True:
-        print "Already backuped today's screenshots data."
+        print("Already backuped today's screenshots data.")
         return
 
     # Go to regions_path.
@@ -342,35 +342,35 @@ def backup_album():
         for name in names:
             albums_list.append(os.path.join(root, name))
 
-    print "Make screenshots file list ... Done. ", len(albums_list), "files."
+    print("Make screenshots file list ... Done. ", len(albums_list), "files.")
     sys.stdout.write("Making backup : ")
 
     # Make zip file.
     make_backup_file(album_file_name, albums_list)
     os.rename(album_file_name, backup_path+album_file_name)
 
-    print "Making screenshots backup ... Done."
+    print("Making screenshots backup ... Done.")
 
 
 def do_backup(part, backup_function):
     """ Ask to back up some part of game data and execute backup function. """
-    answer = raw_input("Will you backup " + part + "?(y/n)")
+    answer = input("Will you backup " + part + "?(y/n)")
 
     if answer == "":
-        print "No input detected. " + part + " backup file will not be made."
+        print("No input detected. " + part + " backup file will not be made.")
     elif answer[0] == "y":
         backup_function()
     elif answer[0] == "n":
-        print "OK. I'll go on."
+        print("OK. I'll go on.")
     else:
-        print "Invalid input! Input must be started with 'y' or 'n'."
+        print("Invalid input! Input must be started with 'y' or 'n'.")
         sys.exit()
 
 
 def print_version():
-    """ Print version of this script. """
-    print "SimCity 4 Backup Version v1.1.0"
-    print "Released Date: 2017-05-20"
+    """ print version of this script. """
+    print("SimCity 4 Backup Version v1.1.0")
+    print("Released Date: 2017-05-20")
     sys.exit()
 
 # Main routine.
@@ -392,7 +392,7 @@ if __name__ == "__main__":
     if os.access("scb.cfg", os.F_OK):
         read_config()
     else:
-        print "Can't find config file(scb.cfg). Make default config."
+        print("Can't find config file(scb.cfg). Make default config.")
         write_default_config()
 
     # System Check.
@@ -409,4 +409,4 @@ if __name__ == "__main__":
         do_backup("regions", backup_region)
 
     # 2-4. done.
-    print "All Done. Check \"" + backup_path + "\" directory."
+    print("All Done. Check \"" + backup_path + "\" directory.")
