@@ -67,14 +67,11 @@ func (c backupConfig) backupPlugin(ignoreAsking bool) {
 			}
 
 			pluginFiles = append(pluginFiles, path)
-			// fmt.Printf("Visited: %q\n", path)
-
 			return nil
 		})
 
 		fmt.Printf("Make plugins file list ... Done. %d files.\n", len(pluginFiles))
 		makeBackupFile(c.pluginFileName, pluginFiles)
-		// os.Rename(c.pluginFileName, c.backupPath+c.pluginFileName)
 	}
 }
 
