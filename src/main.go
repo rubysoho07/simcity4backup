@@ -26,12 +26,12 @@ type backupConfig struct {
 	albumsPath     string
 }
 
-func confirmBackup(ignoreAsking bool) bool {
+func confirmBackup(ignoreAsking bool, t string) bool {
 	if ignoreAsking == true {
 		return true
 	}
 
-	fmt.Print("Will you backup plugins (y/n)? ")
+	fmt.Print("Will you backup ", strings.ToLower(t), " (y/n)? ")
 	var confirmed string
 	fmt.Scan(&confirmed)
 
@@ -127,12 +127,12 @@ func (c backupConfig) backup(ignoreAsking bool, t string) error {
 	}
 
 	if _, err := os.Stat(target); !os.IsNotExist(err) {
-		fmt.Println("Already made the backup of today's plugins data:", target)
+		fmt.Println("Already made the backup of today's ", strings.ToLower(t), "data:", target)
 		return err
 	}
 
-	if confirmBackup(ignoreAsking) == true {
-		fmt.Printf("Making the backup of Plugins ... ")
+	if confirmBackup(ignoreAsking, t) == true {
+		fmt.Print("Making the backup of ", strings.ToLower(t), " ... ")
 		err := c.makeArchiveFile(source, target)
 		if err != nil {
 			return err
@@ -146,8 +146,8 @@ func (c backupConfig) backup(ignoreAsking bool, t string) error {
 func main() {
 	fmt.Println("===============SimCity 4 Backup=================")
 
-	var printVersion = flag.Bool("version", false, "Show version of SC4Backup.")
-	var setAllYes = flag.Bool("yes", false, "Backup all user data without asking you.")
+	printVersion := flag.Bool("version", false, "Show version of SC4Backup.")
+	setAllYes := flag.Bool("yes", false, "Backup all user data without asking you.")
 
 	flag.Parse()
 
@@ -174,6 +174,14 @@ func main() {
 	}
 
 	err := config.backup(*setAllYes, "PLUGIN")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = config.backup(*setAllYes, "REGION")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = config.backup(*setAllYes, "ALBUM")
 	if err != nil {
 		fmt.Println(err)
 	}
