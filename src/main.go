@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 type backupConfig struct {
@@ -89,14 +90,16 @@ func main() {
 		return
 	}
 
+	currentTime := time.Now().Local().Format("2006-01-02")
+
 	config := backupConfig{
 		isThereAlbums:  true,
 		isTherePlugins: true,
 		isThereRegions: true,
-		todayData:      "2018-08-25",
-		pluginFileName: "SC_Plugin_2018-08-25.zip",
-		regionFileName: "SC_Region_2018-08-25.zip",
-		albumFileName:  "SC_Screenshot_2018-08-25.zip",
+		todayData:      currentTime,
+		pluginFileName: "SC_Plugin_" + currentTime + ".zip",
+		regionFileName: "SC_Region_" + currentTime + ".zip",
+		albumFileName:  "SC_Screenshot_" + currentTime + ".zip",
 		backupPath:     "C:\\Users\\hahaf\\Documents\\",
 		pluginsPath:    "C:\\Users\\hahaf\\Documents\\SimCity 4\\Plugins\\",
 		regionsPath:    "C:\\Users\\hahaf\\Documents\\SimCity 4\\Regions\\",
