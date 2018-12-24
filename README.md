@@ -12,8 +12,13 @@
 
 ## 사용 방법
 
+### 빌드하기
+
+* `GOPATH` 환경 변수를 해당 프로젝트를 받은 경로로 설정
+* 터미널에서 `go build simcity4backup` 실행 후, `simcity4backup.exe` 파일을 실행하면 됨
+
 ### 실행하기
-<pre>D:\SC4Backup>SC4Backup.exe [-version|-yes]</pre>
+<pre>D:\SC4Backup>simcity4backup.exe [-version|-yes]</pre>
 
 ### 옵션 목록
 `-version` : 버전 표시 <br>
@@ -40,8 +45,13 @@ This script supports:
 
 ## How To Use
 
+### Build
+
+* Set environment variable `GOPATH` to the folder which source code is downloaded.
+* After run `go build simcity4backup` on terminal, execute `simcity4backup.exe`
+
 ### Execute The Program
-<pre>D:\SC4Backup>SC4Backup.exe [-version|-yes]</pre>
+<pre>D:\SC4Backup>simcity4backup.exe [-version|-yes]</pre>
 
 ### Options
 `-version` : Display the version of this program <br>
