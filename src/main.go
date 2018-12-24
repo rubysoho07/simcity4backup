@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"bufio"
 	"errors"
 	"flag"
 	"fmt"
@@ -13,9 +14,6 @@ import (
 )
 
 type backupConfig struct {
-	isTherePlugins bool
-	isThereRegions bool
-	isThereAlbums  bool
 	todayData      string
 	pluginFileName string
 	regionFileName string
@@ -143,6 +141,82 @@ func (c backupConfig) backup(ignoreAsking bool, t string) error {
 	return nil
 }
 
+func findSimCityFolder() (string, error) {
+
+	m, err := filepath.Glob("C:\\Users\\*\\Documents\\SimCity 4")
+	if err != nil {
+		return "", err
+	}
+
+	if len(m) == 1 {
+		return m[0], nil
+	}
+
+	fmt.Println(m)
+	return "", errors.New("Invalid installation: there are multiple SimCity 4 installed")
+}
+
+func readConfig() (backupConfig, error) {
+	tempSrcPath := ""
+	tempDstPath := ""
+
+	currentTime := time.Now().Local().Format("2006-01-02")
+	config := backupConfig{
+		todayData:      currentTime,
+		pluginFileName: "SC_Plugin_" + currentTime + ".zip",
+		regionFileName: "SC_Region_" + currentTime + ".zip",
+		albumFileName:  "SC_Screenshot_" + currentTime + ".zip",
+	}
+
+	if _, err := os.Stat("scb.cfg"); !os.IsNotExist(err) {
+		confFile, err := os.Open("scb.cfg")
+		if err != nil {
+			return backupConfig{}, err
+		}
+		defer confFile.Close()
+
+		scanner := bufio.NewScanner(confFile)
+		for scanner.Scan() {
+			st := strings.Split(scanner.Text(), "=")
+
+			if st[0] == "SRC_DIR" {
+				config.pluginsPath = st[1] + "\\Plugins"
+				config.regionsPath = st[1] + "\\Regions"
+				config.albumsPath = st[1] + "\\Albums"
+			} else if st[0] == "DEST_DIR" {
+				config.backupPath = st[1] + "\\"
+			}
+		}
+
+	} else {
+		// Write default configuration
+		confFile, err := os.Create("scb.cfg")
+		if err != nil {
+			return backupConfig{}, err
+		}
+		defer confFile.Close()
+
+		tempSrcPath, err = findSimCityFolder()
+		if err != nil {
+			return backupConfig{}, err
+		}
+
+		tempDstPath, err = filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			return backupConfig{}, err
+		}
+
+		confFile.WriteString("SRC_DIR=" + tempSrcPath + "\n")
+		config.pluginsPath = tempSrcPath + "\\Plugins\\"
+		config.regionsPath = tempSrcPath + "\\Regions\\"
+		config.albumsPath = tempSrcPath + "\\Albums\\"
+		confFile.WriteString("DEST_DIR=" + tempDstPath + "\n")
+		config.backupPath = tempDstPath
+	}
+
+	return config, nil
+}
+
 func main() {
 	fmt.Println("===============SimCity 4 Backup=================")
 
@@ -157,23 +231,12 @@ func main() {
 		return
 	}
 
-	currentTime := time.Now().Local().Format("2006-01-02")
-
-	config := backupConfig{
-		isThereAlbums:  true,
-		isTherePlugins: true,
-		isThereRegions: true,
-		todayData:      currentTime,
-		pluginFileName: "SC_Plugin_" + currentTime + ".zip",
-		regionFileName: "SC_Region_" + currentTime + ".zip",
-		albumFileName:  "SC_Screenshot_" + currentTime + ".zip",
-		backupPath:     "C:\\Users\\hahaf\\Documents\\",
-		pluginsPath:    "C:\\Users\\hahaf\\Documents\\SimCity 4\\Plugins\\",
-		regionsPath:    "C:\\Users\\hahaf\\Documents\\SimCity 4\\Regions\\",
-		albumsPath:     "C:\\Users\\hahaf\\Documents\\SimCity 4\\Albums\\",
+	config, err := readConfig()
+	if err != nil {
+		return
 	}
 
-	err := config.backup(*setAllYes, "PLUGIN")
+	err = config.backup(*setAllYes, "PLUGIN")
 	if err != nil {
 		fmt.Println(err)
 	}

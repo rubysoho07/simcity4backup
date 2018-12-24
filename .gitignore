@@ -3,3 +3,12 @@
 
 # Result Zip File
 *.zip
+
+# Configuration File
+scb.cfg
+
+# Debug information
+debug
+
+# Build artifact
+*.exe
