@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -41,8 +42,21 @@ func confirmBackup(ignoreAsking bool) bool {
 	return false
 }
 
-func (c backupConfig) makePluginArchiveFile() error {
-	zipfile, err := os.Create(c.backupPath + c.pluginFileName)
+func (c backupConfig) getBackupInfo(t string) (source string, target string) {
+	switch t {
+	case "PLUGIN":
+		return c.pluginsPath, c.backupPath + c.pluginFileName
+	case "REGION":
+		return c.regionsPath, c.backupPath + c.regionFileName
+	case "ALBUM":
+		return c.albumsPath, c.backupPath + c.albumFileName
+	default:
+		return "ERROR_SOURCE", "ERROR_TARGET"
+	}
+}
+
+func (c backupConfig) makeArchiveFile(source string, target string) error {
+	zipfile, err := os.Create(target)
 	if err != nil {
 		return err
 	}
@@ -51,17 +65,17 @@ func (c backupConfig) makePluginArchiveFile() error {
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
-	info, err := os.Stat(c.pluginsPath)
+	info, err := os.Stat(source)
 	if err != nil {
 		return nil
 	}
 
 	var baseDir string
 	if info.IsDir() {
-		baseDir = filepath.Base(c.pluginsPath)
+		baseDir = filepath.Base(source)
 	}
 
-	filepath.Walk(c.pluginsPath, func(path string, info os.FileInfo, err error) error {
+	filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			fmt.Printf("Error on walking SimCity 4 Plugins Directory (%v)\n", err)
 			return err
@@ -73,7 +87,7 @@ func (c backupConfig) makePluginArchiveFile() error {
 		}
 
 		if baseDir != "" {
-			header.Name = filepath.Join(baseDir, strings.TrimPrefix(path, c.pluginsPath))
+			header.Name = filepath.Join(baseDir, strings.TrimPrefix(path, source))
 		}
 
 		if info.IsDir() {
@@ -104,19 +118,26 @@ func (c backupConfig) makePluginArchiveFile() error {
 	return nil
 }
 
-func (c backupConfig) backupPlugin(ignoreAsking bool) error {
-	if _, err := os.Stat(c.backupPath + c.pluginFileName); !os.IsNotExist(err) {
-		fmt.Println("Already made the backup of today's plugins data.")
+func (c backupConfig) backup(ignoreAsking bool, t string) error {
+
+	source, target := c.getBackupInfo(t)
+
+	if source == "ERROR_SOURCE" || target == "ERROR_TARGET" {
+		return errors.New("Invalid source or target")
+	}
+
+	if _, err := os.Stat(target); !os.IsNotExist(err) {
+		fmt.Println("Already made the backup of today's plugins data:", target)
 		return err
 	}
 
 	if confirmBackup(ignoreAsking) == true {
-		fmt.Printf("Making the backup of Plugins")
-		err := c.makePluginArchiveFile()
+		fmt.Printf("Making the backup of Plugins ... ")
+		err := c.makeArchiveFile(source, target)
 		if err != nil {
 			return err
 		}
-		fmt.Printf(" ... Done.\n")
+		fmt.Printf("Done.\n")
 	}
 
 	return nil
@@ -152,7 +173,7 @@ func main() {
 		albumsPath:     "C:\\Users\\hahaf\\Documents\\SimCity 4\\Albums\\",
 	}
 
-	err := config.backupPlugin(*setAllYes)
+	err := config.backup(*setAllYes, "PLUGIN")
 	if err != nil {
 		fmt.Println(err)
 	}
