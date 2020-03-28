@@ -5,7 +5,7 @@
 *.zip
 
 # Configuration File
-scb.cfg
+scb_cfg.json
 
 # Debug information
 debug

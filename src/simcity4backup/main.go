@@ -2,11 +2,12 @@ package main
 
 import (
 	"archive/zip"
-	"bufio"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,6 +23,11 @@ type backupConfig struct {
 	pluginsPath    string
 	regionsPath    string
 	albumsPath     string
+}
+
+type configFile struct {
+	SrcDir  string `json:"src_dir"`
+	DestDir string `json:"dest_dir"`
 }
 
 func confirmBackup(ignoreAsking bool, t string) bool {
@@ -168,34 +174,22 @@ func readConfig() (backupConfig, error) {
 		albumFileName:  "SC_Screenshot_" + currentTime + ".zip",
 	}
 
-	if _, err := os.Stat("scb.cfg"); !os.IsNotExist(err) {
-		confFile, err := os.Open("scb.cfg")
+	if _, err := os.Stat("scb_cfg.json"); !os.IsNotExist(err) {
+		confFile, err := ioutil.ReadFile("scb_cfg.json")
 		if err != nil {
 			return backupConfig{}, err
 		}
-		defer confFile.Close()
 
-		scanner := bufio.NewScanner(confFile)
-		for scanner.Scan() {
-			st := strings.Split(scanner.Text(), "=")
+		var confJSON configFile
+		json.Unmarshal(confFile, &confJSON)
 
-			if st[0] == "SRC_DIR" {
-				config.pluginsPath = st[1] + "\\Plugins"
-				config.regionsPath = st[1] + "\\Regions"
-				config.albumsPath = st[1] + "\\Albums"
-			} else if st[0] == "DEST_DIR" {
-				config.backupPath = st[1] + "\\"
-			}
-		}
+		config.pluginsPath = confJSON.SrcDir + "\\Plugins"
+		config.regionsPath = confJSON.SrcDir + "\\Regions"
+		config.albumsPath = confJSON.SrcDir + "\\Albums"
+		config.backupPath = confJSON.DestDir + "\\"
 
 	} else {
 		// Write default configuration
-		confFile, err := os.Create("scb.cfg")
-		if err != nil {
-			return backupConfig{}, err
-		}
-		defer confFile.Close()
-
 		tempSrcPath, err = findSimCityFolder()
 		if err != nil {
 			return backupConfig{}, err
@@ -206,12 +200,22 @@ func readConfig() (backupConfig, error) {
 			return backupConfig{}, err
 		}
 
-		confFile.WriteString("SRC_DIR=" + tempSrcPath + "\n")
+		defaultConfig := configFile{
+			SrcDir:  tempSrcPath,
+			DestDir: tempDstPath,
+		}
+
+		defaultConfigJSON, _ := json.Marshal(defaultConfig)
+
+		err := ioutil.WriteFile("scb_cfg.json", defaultConfigJSON, 0)
+		if err != nil {
+			return backupConfig{}, err
+		}
+
 		config.pluginsPath = tempSrcPath + "\\Plugins\\"
 		config.regionsPath = tempSrcPath + "\\Regions\\"
 		config.albumsPath = tempSrcPath + "\\Albums\\"
-		confFile.WriteString("DEST_DIR=" + tempDstPath + "\n")
-		config.backupPath = tempDstPath
+		config.backupPath = tempDstPath + "\\"
 	}
 
 	return config, nil
